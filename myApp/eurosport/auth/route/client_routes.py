@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from ..service.client_service import get_all_clients_service, add_client_service
+from ..service.client_service import get_all_clients_service, add_client_service, update_client_service, delete_client_service
 
 client_bp = Blueprint('client_bp', __name__)
 
@@ -15,3 +15,14 @@ def add_client():
     data = request.get_json()
     new_client = add_client_service(data)
     return jsonify(new_client.to_dict()), 201
+
+@client_bp.route('/<int:entity_id>', methods=['PUT'])
+def update_entity(entity_id):
+    data = request.get_json()
+    updated_entity = update_client_service(entity_id, data)
+    return jsonify(updated_entity.to_dict()), 200
+
+@client_bp.route('/<int:entity_id>', methods=['DELETE'])
+def delete_entity(entity_id):
+    delete_client_service(entity_id)
+    return '', 204
