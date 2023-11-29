@@ -8,7 +8,7 @@ class Time(db.Model):
     time_start = db.Column(db.String(45), nullable=False)
     time_end = db.Column(db.String(45), nullable=False)
     services = db.relationship('Service', back_populates='time', lazy=True)
-    group_trainings = db.relationship('GroupTraining', back_populates='time', lazy=True)
+    group_trainings = db.relationship('GroupTraining', primaryjoin="Time.id == GroupTraining.time_id", back_populates='time', lazy=True)
 
     def to_dict(self):
         return {
@@ -24,13 +24,13 @@ class Service(db.Model):
     name = db.Column(db.String(45), nullable=False)
     time_id = db.Column(db.Integer, db.ForeignKey('time.id'), nullable=False)
     time = db.relationship('Time', back_populates='services')
-    trainer_services = db.relationship('TrainerService', back_populates='service', lazy='dynamic')
+    trainer_services = db.relationship('TrainerService', back_populates='service', lazy=True)
 
     def to_dict(self):
         return {
             'id': self.id,
             'name': self.name,
-            'time': self.time.to_dict() if self.time else None
+            'time_id': self.time_id
         }
 
 class Trainer(db.Model):
@@ -39,16 +39,15 @@ class Trainer(db.Model):
     name = db.Column(db.String(45), nullable=False)
     surname = db.Column(db.String(45), nullable=False)
     phone = db.Column(db.String(12), nullable=True)
-    group_trainings = db.relationship('GroupTraining', back_populates='trainer', lazy=True)
-    trainer_services = db.relationship('TrainerService', back_populates='trainer', lazy='dynamic')
+    group_trainings = db.relationship('GroupTraining', primaryjoin="Trainer.id == GroupTraining.trainer_id", back_populates='trainer', lazy=True)
+    trainer_services = db.relationship('TrainerService', back_populates='trainer', lazy=True)
 
     def to_dict(self):
         return {
             'id': self.id,
             'name': self.name,
             'surname': self.surname,
-            'phone': self.phone,
-            'group_trainings': [training.to_dict() for training in self.group_trainings]
+            'phone': self.phone
         }
 
 class MembershipCardType(db.Model):
@@ -60,8 +59,7 @@ class MembershipCardType(db.Model):
     def to_dict(self):
         return {
             'id': self.id,
-            'name': self.name,
-            'clients': [client.to_dict() for client in self.clients]
+            'name': self.name
         }
 
 class Client(db.Model):
@@ -80,8 +78,8 @@ class Client(db.Model):
             'name': self.name,
             'surname': self.surname,
             'phone': self.phone,
-            'membership_card_type': self.membership_card_type.to_dict() if self.membership_card_type else None,
-            'trainings': [training.to_dict() for training in self.client_trainings]
+            'membership_card_type_id': self.membership_card_type_id,
+            'membership_card_type_name': self.membership_card_type.name,
         }
 
 class Room(db.Model):
@@ -104,6 +102,7 @@ class Equipment(db.Model):
     name = db.Column(db.String(70), nullable=True)
     serial_number = db.Column(db.String(45), nullable=True)
     room_id = db.Column(db.Integer, db.ForeignKey('room.id'), nullable=False)
+    room = db.relationship('Room', back_populates='equipments')
     personal_training_equipment = db.relationship('PersonalTrainingEquipment', back_populates='equipment', lazy='dynamic')
 
     def to_dict(self):
@@ -120,6 +119,8 @@ class GroupTraining(db.Model):
     name = db.Column(db.String(45), nullable=True)
     trainer_id = db.Column(db.Integer, db.ForeignKey('trainer.id'), nullable=False)
     time_id = db.Column(db.Integer, db.ForeignKey('time.id'), nullable=False)
+    time = db.relationship('Time', back_populates='group_trainings')
+    trainer = db.relationship('Trainer', back_populates='group_trainings')
     client_trainings = db.relationship('ClientTraining', back_populates='group_training', lazy=True)
 
     def to_dict(self):
@@ -140,15 +141,21 @@ class TrainerService(db.Model):
     def to_dict(self):
         return {
             'trainer_id': self.trainer_id,
-            'service_id': self.service_id,
-            'trainer': self.trainer.to_dict() if self.trainer else None,
-            'service': self.service.to_dict() if self.service else None
+            'service_id': self.service_id
         }
 
 class ClientTraining(db.Model):
     __tablename__ = 'client_training'
     client_id = db.Column(db.Integer, db.ForeignKey('client.id'), primary_key=True)
     group_training_id = db.Column(db.Integer, db.ForeignKey('group_training.id'), primary_key=True)
+    client = db.relationship('Client', back_populates='client_trainings')
+    group_training = db.relationship('GroupTraining', back_populates='client_trainings')
+
+    def to_dict(self):
+        return {
+            'client_id': self.client_id,
+            'group_training_id': self.group_training_id
+        }
 
 class PersonalTraining(db.Model):
     __tablename__ = 'personal_training'
@@ -158,7 +165,23 @@ class PersonalTraining(db.Model):
     name = db.Column(db.String(45), nullable=True)
     personal_training_equipment = db.relationship('PersonalTrainingEquipment', back_populates='personal_training', lazy='dynamic')
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'trainer_id': self.trainer_id,
+            'client_id': self.client_id,
+            'name': self.name
+        }
+
 class PersonalTrainingEquipment(db.Model):
     __tablename__ = 'personal_training_equipment'
     personal_training_id = db.Column(db.Integer, db.ForeignKey('personal_training.id'), primary_key=True)
     equipment_id = db.Column(db.Integer, db.ForeignKey('equipment.id'), primary_key=True)
+    equipment = db.relationship('Equipment', back_populates='personal_training_equipment')
+    personal_training = db.relationship('PersonalTraining', back_populates='personal_training_equipment')
+
+    def to_dict(self):
+        return {
+            'personal_training_id': self.personal_training_id,
+            'equipment_id': self.equipment_id
+        }
