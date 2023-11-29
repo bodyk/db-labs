@@ -18,9 +18,11 @@ def create_app():
     from myApp.eurosport.auth.route.client_routes import client_bp
     from myApp.eurosport.auth.route.trainer_routes import trainer_bp
     from myApp.eurosport.auth.route.equipment_routes import equipment_bp
+    from myApp.eurosport.auth.route.personal_training_routes import personal_training_bp
 
     app.register_blueprint(client_bp, url_prefix='/clients')
     app.register_blueprint(trainer_bp, url_prefix='/trainers')
     app.register_blueprint(equipment_bp, url_prefix='/equipment')
+    app.register_blueprint(personal_training_bp, url_prefix='/personal_trainings')
 
     return app
