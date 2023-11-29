@@ -1,0 +1,424 @@
+{
+	"info": {
+		"_postman_id": "f7647289-7de8-4f03-a75f-e92432834e0d",
+		"name": "Lab4 DB API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2408699"
+	},
+	"item": [
+		{
+			"name": "POST Create Client",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", () => {\r",
+							"  pm.expect(pm.response.code).to.eql(201);\r",
+							"});\r",
+							"\r",
+							"let jsonData = pm.response.json();\r",
+							"\r",
+							"pm.collectionVariables.set(\"client_id\", jsonData.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\": \"John Doe\", \"surname\": \"Doe\", \"phone\": \"1234567890\", \"membership_card_type_id\": 1}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/clients",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"clients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Created Client",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", () => {\r",
+							"  pm.expect(pm.response.code).to.eql(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\": \"John Doe\", \"surname\": \"Doe\", \"phone\": \"1234567890\", \"membership_card_type_id\": 1}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/clients/{{client_id}}",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"clients",
+						"{{client_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update client",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", () => {\r",
+							"  pm.expect(pm.response.code).to.eql(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\": \"John Doe\", \"surname\": \"UpdatedDoe\", \"phone\": \"1234567890\", \"membership_card_type_id\": 1}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/clients/{{client_id}}",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"clients",
+						"{{client_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Updated Client",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", () => {\r",
+							"  pm.expect(pm.response.code).to.eql(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Updated surname\", () => {\r",
+							"  pm.expect(jsonData.surname).eq(\"UpdatedDoe\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\": \"John Doe\", \"surname\": \"Doe\", \"phone\": \"1234567890\", \"membership_card_type_id\": 1}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/clients/{{client_id}}",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"clients",
+						"{{client_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE Delete Client",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", () => {\r",
+							"  pm.expect(pm.response.code).to.eql(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:5000/clients/{{client_id}}",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"clients",
+						"{{client_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all clients",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.expect(pm.response.code).to.eql(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).not.eq(null);\r",
+							"    pm.expect(jsonData).length.gte(1);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/clients",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"clients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all equipment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.expect(pm.response.code).to.eql(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).not.eq(null);\r",
+							"    pm.expect(jsonData).length.gte(1);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/equipment",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"equipment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all equipment trainers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.expect(pm.response.code).to.eql(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).not.eq(null);\r",
+							"    pm.expect(jsonData).length.gte(1);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/trainers",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"trainers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all personal trainings",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.expect(pm.response.code).to.eql(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).not.eq(null);\r",
+							"    pm.expect(jsonData).length.gte(1);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/personal_trainings",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"personal_trainings"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:5000"
+		},
+		{
+			"key": "client_id",
+			"value": ""
+		}
+	]
+}

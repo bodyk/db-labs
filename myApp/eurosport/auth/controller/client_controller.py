@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from ..service.client_service import (
-    get_all_clients_service, 
+    get_all_clients_service,
+    get_client_by_id_service,
     add_client_service, 
     update_client_service, 
     delete_client_service
@@ -12,6 +13,13 @@ client_bp = Blueprint('client_bp', __name__)
 def get_clients():
     clients = get_all_clients_service()
     return jsonify([client.to_dict() for client in clients]), 200
+
+@client_bp.route('/clients/<int:client_id>', methods=['GET'])
+def get_client_by_id(entity_id):
+    client = get_client_by_id_service(entity_id)
+    if client is None:
+        return jsonify({'message': 'Client not found'}), 404
+    return jsonify(client.to_dict()), 200
 
 @client_bp.route('/clients', methods=['POST'])
 def add_client():
